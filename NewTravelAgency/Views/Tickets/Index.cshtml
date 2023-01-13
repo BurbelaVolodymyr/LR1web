@@ -1,0 +1,108 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, MvcApp
+
+@model IEnumerable<NewTravelAgency.Models.Ticket>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Ticket</h1>
+
+<p>
+    <a asp-action="Create">Create New Ticket</a>
+</p>
+
+
+@*<table>
+    <tr>
+        <th>
+            <a asp-action="Index" 
+            asp-route-sortOrder="@ViewBag.HotelNameSort">
+            </a>
+        </th>
+     
+        <th>
+            <a asp-action="Index" asp-route-sortOrder="@ViewBag.CostSort">
+            </a>
+        </th>
+    </tr>
+    @foreach (Ticket item in Model)
+    {
+        <tr><td>@item.Hotel?.Name</td><td>@item.Cost</td></tr>
+    }
+</table>*@
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeDeparture)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeArrival)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TouristNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Hotel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Hotel.ResortId)
+            </th>
+@*            <th>
+                @Html.DisplayNameFor(model => model.Hotel.Resort.Country)
+            </th>*@
+@*            <th>
+                @Html.DisplayNameFor(model => model.Ordering)
+            </th>*@
+
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeDeparture)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeArrival)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TouristNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hotel.Name)
+            </td>
+           <td>
+                    @Html.DisplayFor(modelItem => item.Hotel.ResortId)
+            </td>
+ @*                <td>
+                    @Html.DisplayFor(modelItem => item.Hotel.Resort.Country.Name)
+                </td>*@
+
+@*            <td>
+                @Html.DisplayFor(modelItem => item.Ordering.Id)
+            </td>*@
+
+
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

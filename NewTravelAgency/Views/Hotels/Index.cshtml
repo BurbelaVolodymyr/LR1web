@@ -1,0 +1,83 @@
+﻿@model IEnumerable<NewTravelAgency.Models.Hotel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Hotel</h1>
+
+<p>
+    <a asp-action="Create">Create New Hotel</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StarsNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Room)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Safe)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Conditioner)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WiFi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MiniBar)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Resort)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StarsNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Room)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Safe)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Conditioner)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WiFi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MiniBar)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Resort.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
