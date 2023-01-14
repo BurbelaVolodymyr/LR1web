@@ -1,11 +1,13 @@
-﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@addTagHelper *, MvcApp
-
-@model IEnumerable<NewTravelAgency.Models.Ticket>
+﻿@*@model IEnumerable<NewTravelAgency.Models.Ticket>*@
 
 @{
     ViewData["Title"] = "Index";
 }
+
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using NewTravelAgency.Models
+@model IndexViewModel
 
 <h1>Ticket</h1>
 
@@ -14,26 +16,122 @@
 </p>
 
 
-@*<table>
-    <tr>
-        <th>
-            <a asp-action="Index" 
-            asp-route-sortOrder="@ViewBag.HotelNameSort">
-            </a>
-        </th>
-     
-        <th>
-            <a asp-action="Index" asp-route-sortOrder="@ViewBag.CostSort">
-            </a>
-        </th>
-    </tr>
-    @foreach (Ticket item in Model)
-    {
-        <tr><td>@item.Hotel?.Name</td><td>@item.Cost</td></tr>
+<style>
+    .glyphicon {
+        display: inline-block;
+        padding: 0 5px;
     }
-</table>*@
+
+    .glyphicon-chevron-right:after {
+        content: "\00BB";
+    }
+
+    .glyphicon-chevron-left:before {
+        content: "\00AB";
+    }
+</style>
 
 
+<form method="get">
+    <label>Имя готелю: </label>
+    <select name="hotel" asp-items="Model.FilterViewModel.Hotels"></select>
+
+    <input type="submit" value="Фильтр" />
+</form>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.SortViewModel.HotelNameSort)"
+                   asp-route-name="@(Model.FilterViewModel.SelectedHotel)"
+                   asp-route-company="@(Model.FilterViewModel.SelectedHotel)">Ім'я готелю</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.CostSort)"
+                   asp-route-name="@(Model.FilterViewModel.SelectedHotel)"
+                   asp-route-company="@(Model.FilterViewModel.SelectedHotel)">Ціна</a>
+            </th>
+            <th>
+                TimeDeparture
+            </th>
+            <th>
+                TimeArrival
+            </th>
+            <th>
+                TouristNumber
+            </th>
+            <th>
+                Name Resort
+            </th>
+            <th>
+                Name Country
+            </th>
+
+        </tr>
+        @foreach (Ticket t in Model.Tickets)
+        {
+            <tr>
+                <td>@t.Hotel.Name</td>
+                <td>@t.Cost</td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => t.TimeDeparture)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => t.TimeArrival)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => t.TouristNumber)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => t.Hotel.Resort.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => t.Hotel.Resort.Country.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@t.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@t.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@t.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+</table>
+
+<p>
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       asp-route-name="@(Model.FilterViewModel.SelectedHotel)"
+       asp-route-sortorder="@(Model.SortViewModel.Current)"
+       class="glyphicon glyphicon-chevron-left">
+            Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       asp-route-name="@(Model.FilterViewModel.SelectedHotel)"
+       asp-route-sortorder="@(Model.SortViewModel.Current)"
+       class="glyphicon glyphicon-chevron-right">
+            Вперед
+        </a>
+    }
+</p>
+
+
+
+
+
+@*
 
 <table class="table">
     <thead>
@@ -54,14 +152,14 @@
                 @Html.DisplayNameFor(model => model.Hotel)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Hotel.ResortId)
+                @Html.DisplayNameFor(model => model.Hotel.Resort)
             </th>
-@*            <th>
+            <th>
                 @Html.DisplayNameFor(model => model.Hotel.Resort.Country)
-            </th>*@
-@*            <th>
+            </th>
+          <th>
                 @Html.DisplayNameFor(model => model.Ordering)
-            </th>*@
+            </th>
 
 
             <th></th>
@@ -86,15 +184,15 @@
                 @Html.DisplayFor(modelItem => item.Hotel.Name)
             </td>
            <td>
-                    @Html.DisplayFor(modelItem => item.Hotel.ResortId)
+                    @Html.DisplayFor(modelItem => item.Hotel.Resort.Name)
             </td>
- @*                <td>
+                 <td>
                     @Html.DisplayFor(modelItem => item.Hotel.Resort.Country.Name)
-                </td>*@
+                </td>
 
-@*            <td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Ordering.Id)
-            </td>*@
+            </td>
 
 
             <td>
@@ -106,3 +204,4 @@
 }
     </tbody>
 </table>
+*@

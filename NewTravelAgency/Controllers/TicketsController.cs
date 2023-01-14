@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NewTravelAgency;
 using NewTravelAgency.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace NewTravelAgency.Controllers
 {
@@ -20,12 +21,57 @@ namespace NewTravelAgency.Controllers
         }
 
         // GET: Tickets
-        public async Task<IActionResult> Index()
-        {
-            var travelAgencyContext = _context.Tickets.Include(t => t.Hotel).Include(t => t.Ordering);
-            return View(await travelAgencyContext.ToListAsync());
+        //public async Task<IActionResult> Index()
+        //{
+        //    var travelAgencyContext = _context.Tickets.Include(t => t.Hotel).ThenInclude(t => t.Resort).ThenInclude(t => t.Country).Include(t => t.Ordering);    
+        //    return View(await travelAgencyContext.ToListAsync());
 
+        //}
+
+        public async Task<IActionResult> Index(int page = 1, int hotel = 0,
+    SortTicket sortOrder = SortTicket.HotelNameAsc)
+        {
+            int pageSize = 10;
+
+            // фільтрація
+            IQueryable<Ticket> tickets = _context.Tickets.Include(t => t.Hotel).ThenInclude(r => r.Resort).ThenInclude(c => c.Country).Include(t => t.Ordering);
+
+            if (hotel != 0)
+            {
+                tickets = tickets.Where(p => p.HotelId == hotel);
+            }
+
+            // сортування
+            switch (sortOrder)
+            {
+                case SortTicket.HotelNameDesc:
+                    tickets = tickets.OrderByDescending(s => s.Hotel!.Name);
+                    break;
+                case SortTicket.CostAsc:
+                    tickets = tickets.OrderBy(s => s.Cost);
+                    break;
+                case SortTicket.CostDesc:
+                    tickets = tickets.OrderByDescending(s => s.Cost);
+                    break;
+                default:
+                    tickets = tickets.OrderBy(s => s.Hotel!.Name);
+                    break;
+            }
+
+            // пагінація
+            var count = await tickets.CountAsync();
+            var items = await tickets.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            // формуємо модель представлення
+            IndexViewModel viewModel = new IndexViewModel(
+            items,
+            new PageViewModel(count, page, pageSize),
+                new FilterViewModel(_context.Hotels.ToList(), hotel),
+                new SortViewModel(sortOrder)
+            );
+            return View(viewModel);
         }
+
 
         // GET: Tickets/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -176,24 +222,7 @@ namespace NewTravelAgency.Controllers
             return _context.Tickets.Any(e => e.Id == id);
         }
 
-        // Sort
-        public async Task<IActionResult> Index(SortTicket sortOrder = SortTicket.HotelNameAsc)
-        {
-            IQueryable<Ticket> tickets = _context.Tickets.Include(x => x.Hotel);
 
-            ViewData["HotelNameSort"] = sortOrder == SortTicket.HotelNameAsc ? SortTicket.HotelNameDesc : SortTicket.HotelNameAsc;
-            ViewData["CostSort"] = sortOrder == SortTicket.CostAsc ? SortTicket.CostDesc : SortTicket.CostAsc;
-
-            tickets = sortOrder switch
-            {
-                SortTicket.HotelNameDesc => tickets.OrderByDescending(s => s.Hotel!.Name),
-                SortTicket.CostAsc => tickets.OrderBy(s => s.Cost),
-                SortTicket.CostDesc => tickets.OrderByDescending(s => s.Cost),
-                _ => tickets.OrderBy(s => s.Cost),
-            };
-
-            return View(await tickets.AsNoTracking().ToListAsync());
-        }
 
     }
 }
