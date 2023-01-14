@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace NewTravelAgency.Controllers
 {
+    [Authorize]
     public class TicketsController : Controller
     {
         private readonly TravelAgencyContext _context;
@@ -92,7 +94,7 @@ namespace NewTravelAgency.Controllers
 
             return View(ticket);
         }
-
+        [Authorize(Roles = "AdminRole")]
         // GET: Tickets/Create
         public IActionResult Create()
         {
@@ -102,7 +104,7 @@ namespace NewTravelAgency.Controllers
             ViewData["OrderingId"] = new SelectList(_context.Orderings, "Id", "Name");
             return View();
         }
-
+        [Authorize(Roles = "AdminRole")]
         // POST: Tickets/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -120,7 +122,7 @@ namespace NewTravelAgency.Controllers
             ViewData["OrderingId"] = new SelectList(_context.Orderings, "Id", "Id", ticket.OrderingId);
             return View(ticket);
         }
-
+        [Authorize(Roles = "AdminRole")]
         // GET: Tickets/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -140,7 +142,7 @@ namespace NewTravelAgency.Controllers
             ViewData["OrderingId"] = new SelectList(_context.Orderings, "Id", "Name", ticket.OrderingId);
             return View(ticket);
         }
-
+        [Authorize(Roles = "AdminRole")]
         // POST: Tickets/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -177,7 +179,7 @@ namespace NewTravelAgency.Controllers
             ViewData["OrderingId"] = new SelectList(_context.Orderings, "Id", "Id", ticket.OrderingId);
             return View(ticket);
         }
-
+        [Authorize(Roles = "AdminRole")]
         // GET: Tickets/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -197,7 +199,7 @@ namespace NewTravelAgency.Controllers
 
             return View(ticket);
         }
-
+        [Authorize(Roles = "AdminRole")]
         // POST: Tickets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using NewTravelAgency.Models;
 
 namespace NewTravelAgency.Controllers
 {
+    [Authorize]
     public class HotelsController : Controller
     {
         private readonly TravelAgencyContext _context;
@@ -44,14 +46,14 @@ namespace NewTravelAgency.Controllers
 
             return View(hotel);
         }
-
+        [Authorize(Roles = "AdminRole")]
         // GET: Hotels/Create
         public IActionResult Create()
         {
             ViewData["ResortId"] = new SelectList(_context.Resorts, "Id", "Name");
             return View();
         }
-
+        [Authorize(Roles = "AdminRole")]
         // POST: Hotels/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -68,7 +70,7 @@ namespace NewTravelAgency.Controllers
             ViewData["ResortId"] = new SelectList(_context.Resorts, "Id", "Id", hotel.ResortId);
             return View(hotel);
         }
-
+        [Authorize(Roles = "AdminRole")]
         // GET: Hotels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -85,7 +87,7 @@ namespace NewTravelAgency.Controllers
             ViewData["ResortId"] = new SelectList(_context.Resorts, "Id", "Name", hotel.ResortId);
             return View(hotel);
         }
-
+        [Authorize(Roles = "AdminRole")]
         // POST: Hotels/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -121,7 +123,7 @@ namespace NewTravelAgency.Controllers
             ViewData["ResortId"] = new SelectList(_context.Resorts, "Id", "Id", hotel.ResortId);
             return View(hotel);
         }
-
+        [Authorize(Roles = "AdminRole")]
         // GET: Hotels/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -140,7 +142,7 @@ namespace NewTravelAgency.Controllers
 
             return View(hotel);
         }
-
+        [Authorize(Roles = "AdminRole")]
         // POST: Hotels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
